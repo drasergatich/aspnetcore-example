@@ -1,0 +1,175 @@
+﻿@page
+@model Empresa.Proyecto.Web.Pages.CrearEntityOption.CrearModel
+@{
+    ViewData["Title"] = "Crear NamedOption";
+}
+<head>
+    <!--SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<h1>Crear EntityOption</h1>
+<form id="createOptionForm" method="post" asp-antiforgery="true" data-ajax="true" data-ajax-method="POST" data-ajax-url="@Url.Page("CrearEntityOption")">
+    <div class="form-group">
+        <label for="Nombre">Nombre</label>
+        <input asp-for="Input.Nombre" class="form-control" />
+        <span asp-validation-for="Input.Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="SimpleEntityId">Opción</label>
+        <select asp-for="Input.SimpleEntityId" class="form-control">
+            <option value="">Seleccione una opción</option>
+            @foreach (var item in Model.Entidades)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Input.SimpleEntityId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+<!-- Contenedor de carga -->
+<div id="loading" style="display: none;">
+    <div class="loader"></div>
+    <p>Cargando, por favor espera...</p>
+</div>
+<!--Estilos-->
+<style>
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    div {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input, select, button {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+            /* Estilo para el overlay de carga */
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Estilo para el spinner */
+    .loader {
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 8px solid #007BFF;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.11/dist/jquery.validate.unobtrusive.min.js"></script>
+}
+<script>
+    $("#createOptionForm").submit(function (e) {
+        e.preventDefault();
+
+        // Mostrar el spinner de carga
+        $("#loading").show();
+
+        // Validaciones del formulario antes de enviarlo
+        var isValid = true;
+        var errorMessage = '';
+
+
+        // Validar el campo 'Nombre'
+        var nombre = $("#Input_Nombre").val().trim();
+        if (nombre === '') {
+            isValid = false;
+            errorMessage += "El campo 'Nombre' es obligatorio.\n";
+        }
+        // Validar el campo 'SimpleEntityId'
+        var simpleEntityId = $("#Input_SimpleEntityId").val().trim();
+        if (simpleEntityId === '' || isNaN(simpleEntityId)) {
+            isValid = false;
+            errorMessage += "El campo 'Opción' es obligatorio.\n";
+        }
+
+        // Si alguna validación falla, mostrar el mensaje de error y detener el envío
+        if (!isValid) {
+            $("#loading").hide();  // Ocultar el spinner de carga
+            return; 
+        }
+
+        $.ajax({
+            url: $(this).data("ajax-url"),
+            type: $(this).data("ajax-method"),
+            data: $(this).serialize(),
+            success: function (response) {
+                $("#loading").hide();  // Ocultar spinner de carga
+
+                if (response.success) {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        // Redirigir
+                        window.location.href = response.redirectUrl || window.location.href;
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.errorMessage || 'Hubo un problema al enviar el formulario.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                $("#loading").hide();  // Ocultar spinner de carga
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un error inesperado al procesar la solicitud.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+    });
+
+</script>
