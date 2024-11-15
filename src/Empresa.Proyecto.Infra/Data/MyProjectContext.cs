@@ -17,7 +17,7 @@ namespace Empresa.Proyecto.Infra.Data
 
         public DbSet<SimpleEntity> SimpleEntity => Set<SimpleEntity>();
         public DbSet<ComplexEntity> ComplexEntity => Set<ComplexEntity>();
-
+        public DbSet<EntityOption> EntityOption => Set<EntityOption>();
         protected override void OnModelCreating(ModelBuilder builder)
         {           
             builder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
