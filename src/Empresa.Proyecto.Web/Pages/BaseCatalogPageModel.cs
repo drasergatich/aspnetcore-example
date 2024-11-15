@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Empresa.Proyecto.Core.Entities;
 using Empresa.Proyecto.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Empresa.Proyecto.Web.Pages
 {
@@ -18,10 +19,10 @@ namespace Empresa.Proyecto.Web.Pages
             Logger = logger;
         }
 
-        public async Task<JsonResult> OnPostCatalog()
+        public async Task<JsonResult> OnPostCatalog(int pageNumber = 1, int pageSize = 10)
         {
-            var catalog = await Repo.ListAllOrderAsync();
-            return new JsonResult(new { data = catalog });
+            var (items, totalCount) = await Repo.GetPagedAsync(pageNumber, pageSize);
+            return new JsonResult(new { data = items, recordsTotal = totalCount, recordsFiltered = totalCount });
         }
     }
 }

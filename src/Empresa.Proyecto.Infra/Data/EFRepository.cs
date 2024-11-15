@@ -61,6 +61,20 @@ namespace Empresa.Proyecto.Infra.Data
             throw new InvalidOperationException($"La clase {typeof(T).Name} no tiene la propiedad 'Name'.");
         }
         /// <summary>
+        /// Regresa un listado paginado de todas las entidades ordenadas alfabéticamente
+        /// </summary>
+        /// <returns>Coleccion paginada de entidades</returns>
+        public async Task<(IReadOnlyList<SimpleEntity> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var totalCount = await _dbContext.Set<SimpleEntity>().CountAsync();
+            var items = await _dbContext.Set<SimpleEntity>()
+                                        .OrderBy(e => e.Name) 
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToListAsync();
+            return (items, totalCount);
+        }
+        /// <summary>
         /// Agrega una Entidad al repositorio
         /// </summary>
         /// <param name="entity">Entidad de tipo <c>T</c> a agregar</param>

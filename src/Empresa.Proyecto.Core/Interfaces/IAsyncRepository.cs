@@ -32,6 +32,11 @@ namespace Empresa.Proyecto.Core.Interfaces
         /// </summary>
         /// <returns>Lista solo lectura de elementos</returns>
         Task<IReadOnlyList<T>> ListAllOrderAsync();
+        /// <summary>
+        /// Regresa un listado paginado de todas las entidades ordenadas alfabéticamente
+        /// </summary>
+        /// <returns>Coleccion paginada de entidades</returns>
+        Task<(IReadOnlyList<SimpleEntity> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize);
 
         /// <summary>
         /// Listado de los elementos del repositorio filtrados por una condicion
