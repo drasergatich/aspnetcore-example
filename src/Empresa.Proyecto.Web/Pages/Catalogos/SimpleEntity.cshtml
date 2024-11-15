@@ -36,10 +36,37 @@
                     headers: { 'RequestVerificationToken': $('@Html.AntiForgeryToken()').val() }
                 },
                 columns:[
+                    { data: 'Id' },
                     { data: 'Name'},
                     { data: 'Value' },
-                    { data: 'Created' },
-                    { data: 'Modified'}
+                    {
+                        data: 'Created',
+                        render: function (data, type, row) {
+                            if (data) {
+                                const date = new Date(data);
+                                return date.toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                });
+                            }
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'Modified',
+                        render: function (data, type, row) {
+                            if (data) {
+                                const date = new Date(data);
+                                return date.toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                });
+                            }
+                            return '';
+                        }
+                    }
                 ]
             });
         })
