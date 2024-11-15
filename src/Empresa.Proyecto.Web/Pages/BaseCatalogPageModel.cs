@@ -20,7 +20,7 @@ namespace Empresa.Proyecto.Web.Pages
 
         public async Task<JsonResult> OnPostCatalog()
         {
-            var catalog = await Repo.ListAllAsync();
+            var catalog = await Repo.ListAllOrderAsync();
             return new JsonResult(new { data = catalog });
         }
     }

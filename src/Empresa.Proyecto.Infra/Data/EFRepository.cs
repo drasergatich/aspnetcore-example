@@ -46,6 +46,21 @@ namespace Empresa.Proyecto.Infra.Data
         }
 
         /// <summary>
+        /// Regresa un listado de todas las entidades  ordenados alfabéticamente
+        /// </summary>
+        /// <returns>Coleccion de entidades</returns>
+        public async Task<IReadOnlyList<T>> ListAllOrderAsync()
+        {
+            if (typeof(T).GetProperty("Name") != null)
+            {
+                return await _dbContext.Set<T>()
+                    .OrderBy(e => EF.Property<string>(e, "Name"))
+                    .ToListAsync();
+            }
+
+            throw new InvalidOperationException($"La clase {typeof(T).Name} no tiene la propiedad 'Name'.");
+        }
+        /// <summary>
         /// Agrega una Entidad al repositorio
         /// </summary>
         /// <param name="entity">Entidad de tipo <c>T</c> a agregar</param>
