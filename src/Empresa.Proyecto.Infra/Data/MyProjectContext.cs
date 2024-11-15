@@ -21,6 +21,12 @@ namespace Empresa.Proyecto.Infra.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {           
             builder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
+            builder.Entity<SimpleEntity>().HasData
+                (
+                new SimpleEntity { Id = 1, Name = "Nuevo", Created = DateTime.Now, Modified = DateTime.Now },
+                new SimpleEntity { Id = 2, Name = "Existente", Created = new DateTime(2024, 10, 10), Modified = new DateTime(2024, 10, 10) },
+                new SimpleEntity { Id = 3, Name = "Reconstruido", Created = new DateTime(2024, 08, 09), Modified = new DateTime(2024, 08, 09) }
+                );
         }
     }
 }
